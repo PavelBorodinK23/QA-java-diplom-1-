@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
+import org.assertj.core.api.SoftAssertions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,35 +49,55 @@ public class BurgerTest {
     }
 
     @Test
-    public void testSetBuns() {
+    public void testSetBunsSetsBun() {
         burger.setBuns(bun);
         assertNotNull(burger.bun);
+    }
+
+    @Test
+    public void testSetBunsSetsCorrectBun() {
+        burger.setBuns(bun);
         assertEquals(bun, burger.bun);
     }
 
     @Test
-    public void testAddIngredient() {
+    public void testAddIngredientIncreasesSize() {
         burger.addIngredient(fillingIngredient);
         assertEquals(1, burger.ingredients.size());
+    }
+
+    @Test
+    public void testAddIngredientAddsCorrectIngredient() {
+        burger.addIngredient(fillingIngredient);
         assertEquals(fillingIngredient, burger.ingredients.get(0));
     }
 
     @Test
-    public void testRemoveIngredient() {
+    public void testRemoveIngredientDecreasesSize() {
         burger.addIngredient(fillingIngredient);
         burger.addIngredient(sauceIngredient);
         burger.removeIngredient(0);
         assertEquals(1, burger.ingredients.size());
+    }
+
+    @Test
+    public void testRemoveIngredientRemovesCorrectIngredient() {
+        burger.addIngredient(fillingIngredient);
+        burger.addIngredient(sauceIngredient);
+        burger.removeIngredient(0);
         assertEquals(sauceIngredient, burger.ingredients.get(0));
     }
 
     @Test
-    public void testMoveIngredient() {
+    public void testMoveIngredientChangesOrder() {
         burger.addIngredient(fillingIngredient);
         burger.addIngredient(sauceIngredient);
         burger.moveIngredient(0, 1);
-        assertEquals(sauceIngredient, burger.ingredients.get(0));
-        assertEquals(fillingIngredient, burger.ingredients.get(1));
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(burger.ingredients.get(0)).isEqualTo(sauceIngredient);
+        softly.assertThat(burger.ingredients.get(1)).isEqualTo(fillingIngredient);
+        softly.assertAll();
     }
 
     @Test
