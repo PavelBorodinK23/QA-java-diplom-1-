@@ -17,8 +17,8 @@ public class BurgerTest {
 
     private Burger burger;
     private Bun bun;
-    private Ingredient ingredient1;
-    private Ingredient ingredient2;
+    private Ingredient fillingIngredient;
+    private Ingredient sauceIngredient;
 
     @Parameterized.Parameter
     public IngredientType ingredientType;
@@ -32,19 +32,19 @@ public class BurgerTest {
     public void setUp() {
         burger = new Burger();
         bun = Mockito.mock(Bun.class);
-        ingredient1 = Mockito.mock(Ingredient.class);
-        ingredient2 = Mockito.mock(Ingredient.class);
+        fillingIngredient = Mockito.mock(Ingredient.class);
+        sauceIngredient = Mockito.mock(Ingredient.class);
 
         Mockito.when(bun.getName()).thenReturn("white bun");
         Mockito.when(bun.getPrice()).thenReturn(200f);
 
-        Mockito.when(ingredient1.getType()).thenReturn(FILLING);
-        Mockito.when(ingredient1.getName()).thenReturn("cutlet");
-        Mockito.when(ingredient1.getPrice()).thenReturn(100f);
+        Mockito.when(fillingIngredient.getType()).thenReturn(FILLING);
+        Mockito.when(fillingIngredient.getName()).thenReturn("cutlet");
+        Mockito.when(fillingIngredient.getPrice()).thenReturn(100f);
 
-        Mockito.when(ingredient2.getType()).thenReturn(SAUCE);
-        Mockito.when(ingredient2.getName()).thenReturn("hot sauce");
-        Mockito.when(ingredient2.getPrice()).thenReturn(50f);
+        Mockito.when(sauceIngredient.getType()).thenReturn(SAUCE);
+        Mockito.when(sauceIngredient.getName()).thenReturn("hot sauce");
+        Mockito.when(sauceIngredient.getPrice()).thenReturn(50f);
     }
 
     @Test
@@ -56,48 +56,48 @@ public class BurgerTest {
 
     @Test
     public void testAddIngredient() {
-        burger.addIngredient(ingredient1);
+        burger.addIngredient(fillingIngredient);
         assertEquals(1, burger.ingredients.size());
-        assertEquals(ingredient1, burger.ingredients.get(0));
+        assertEquals(fillingIngredient, burger.ingredients.get(0));
     }
 
     @Test
     public void testRemoveIngredient() {
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+        burger.addIngredient(fillingIngredient);
+        burger.addIngredient(sauceIngredient);
         burger.removeIngredient(0);
         assertEquals(1, burger.ingredients.size());
-        assertEquals(ingredient2, burger.ingredients.get(0));
+        assertEquals(sauceIngredient, burger.ingredients.get(0));
     }
 
     @Test
     public void testMoveIngredient() {
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+        burger.addIngredient(fillingIngredient);
+        burger.addIngredient(sauceIngredient);
         burger.moveIngredient(0, 1);
-        assertEquals(ingredient2, burger.ingredients.get(0));
-        assertEquals(ingredient1, burger.ingredients.get(1));
+        assertEquals(sauceIngredient, burger.ingredients.get(0));
+        assertEquals(fillingIngredient, burger.ingredients.get(1));
     }
 
     @Test
     public void testGetPrice() {
         burger.setBuns(bun);
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+        burger.addIngredient(fillingIngredient);
+        burger.addIngredient(sauceIngredient);
 
-        float expectedPrice = bun.getPrice() * 2 + ingredient1.getPrice() + ingredient2.getPrice();
+        float expectedPrice = bun.getPrice() * 2 + fillingIngredient.getPrice() + sauceIngredient.getPrice();
         assertEquals(expectedPrice, burger.getPrice(), 0.0f);
     }
 
     @Test
     public void testGetReceipt() {
         burger.setBuns(bun);
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+        burger.addIngredient(fillingIngredient);
+        burger.addIngredient(sauceIngredient);
 
         String expectedReceipt = String.format("(==== %s ====)%n", bun.getName()) +
-                String.format("= %s %s =%n", ingredient1.getType().toString().toLowerCase(), ingredient1.getName()) +
-                String.format("= %s %s =%n", ingredient2.getType().toString().toLowerCase(), ingredient2.getName()) +
+                String.format("= %s %s =%n", fillingIngredient.getType().toString().toLowerCase(), fillingIngredient.getName()) +
+                String.format("= %s %s =%n", sauceIngredient.getType().toString().toLowerCase(), sauceIngredient.getName()) +
                 String.format("(==== %s ====)%n", bun.getName()) +
                 String.format("%nPrice: %f%n", burger.getPrice());
 
@@ -106,10 +106,10 @@ public class BurgerTest {
 
     @Test
     public void testGetReceiptWithParameterizedIngredients() {
-        Mockito.when(ingredient1.getType()).thenReturn(ingredientType);
+        Mockito.when(fillingIngredient.getType()).thenReturn(ingredientType);
 
         burger.setBuns(bun);
-        burger.addIngredient(ingredient1);
+        burger.addIngredient(fillingIngredient);
 
         String expectedType = ingredientType.toString().toLowerCase();
         assertTrue(burger.getReceipt().contains(expectedType));
