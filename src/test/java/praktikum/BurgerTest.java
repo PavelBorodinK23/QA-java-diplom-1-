@@ -13,21 +13,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static praktikum.IngredientType.*;
 
-@RunWith(Parameterized.class)
 public class BurgerTest {
 
     private Burger burger;
     private Bun bun;
     private Ingredient fillingIngredient;
     private Ingredient sauceIngredient;
-
-    @Parameterized.Parameter
-    public IngredientType ingredientType;
-
-    @Parameterized.Parameters
-    public static List<IngredientType> data() {
-        return Arrays.asList(FILLING, SAUCE);
-    }
 
     @Before
     public void setUp() {
@@ -125,14 +116,40 @@ public class BurgerTest {
         assertEquals(expectedReceipt, burger.getReceipt());
     }
 
-    @Test
-    public void testGetReceiptWithParameterizedIngredients() {
-        Mockito.when(fillingIngredient.getType()).thenReturn(ingredientType);
+    @RunWith(Parameterized.class)
+    public static class ParameterizedBurgerTest {
+        @Parameterized.Parameter
+        public IngredientType ingredientType;
 
-        burger.setBuns(bun);
-        burger.addIngredient(fillingIngredient);
+        @Parameterized.Parameters
+        public static List<IngredientType> data() {
+            return Arrays.asList(FILLING, SAUCE);
+        }
 
-        String expectedType = ingredientType.toString().toLowerCase();
-        assertTrue(burger.getReceipt().contains(expectedType));
+        private Burger burger;
+        private Bun bun;
+        private Ingredient ingredient;
+
+        @Before
+        public void setUp() {
+            burger = new Burger();
+            bun = Mockito.mock(Bun.class);
+            ingredient = Mockito.mock(Ingredient.class);
+
+            Mockito.when(bun.getName()).thenReturn("white bun");
+            Mockito.when(bun.getPrice()).thenReturn(200f);
+            Mockito.when(ingredient.getType()).thenReturn(ingredientType);
+            Mockito.when(ingredient.getName()).thenReturn("test ingredient");
+            Mockito.when(ingredient.getPrice()).thenReturn(100f);
+        }
+
+        @Test
+        public void testGetReceiptWithParameterizedIngredients() {
+            burger.setBuns(bun);
+            burger.addIngredient(ingredient);
+
+            String expectedType = ingredientType.toString().toLowerCase();
+            assertTrue(burger.getReceipt().contains(expectedType));
+        }
     }
 }
