@@ -2,6 +2,7 @@ package praktikum;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
@@ -13,6 +14,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static praktikum.IngredientType.*;
 
+@RunWith(Enclosed.class)
 public class BurgerTest {
 
     private Burger burger;
@@ -117,11 +119,11 @@ public class BurgerTest {
     }
 
     @RunWith(Parameterized.class)
-    public static class ParameterizedBurgerTest {
+    public static class ParameterizedReceiptTest {
         @Parameterized.Parameter
         public IngredientType ingredientType;
 
-        @Parameterized.Parameters
+        @Parameterized.Parameters(name = "{index}: Test with ingredientType={0}")
         public static List<IngredientType> data() {
             return Arrays.asList(FILLING, SAUCE);
         }
@@ -144,7 +146,7 @@ public class BurgerTest {
         }
 
         @Test
-        public void testGetReceiptWithParameterizedIngredients() {
+        public void testGetReceiptContainsCorrectIngredientType() {
             burger.setBuns(bun);
             burger.addIngredient(ingredient);
 
